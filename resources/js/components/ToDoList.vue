@@ -25,10 +25,15 @@
 
         methods: {
             addItem() {
-                if(this.inputField !== '') this.items.push({
-                    value: this.inputField,
-                    checkedClass: '',
-                });
+                if(this.inputField !== '') {
+                    axios.post('api/items', {value: this.inputField})
+                        .then(({data}) => console.log(data))
+                        .catch(({response}) => console.log(response));
+                }
+//                this.items.push({
+//                    value: this.inputField,
+//                    checkedClass: '',
+//                });
             },
             noteItem(index) {
                 this.items[index].checkedClass = !this.items[index].checkedClass ? 'checked' : '';

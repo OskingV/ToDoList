@@ -1787,10 +1787,21 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     addItem: function addItem() {
-      if (this.inputField !== '') this.items.push({
-        value: this.inputField,
-        checkedClass: ''
-      });
+      if (this.inputField !== '') {
+        axios.post('api/items', {
+          value: this.inputField
+        }).then(function (_ref) {
+          var data = _ref.data;
+          return console.log(data);
+        }).catch(function (_ref2) {
+          var response = _ref2.response;
+          return console.log(response);
+        });
+      } //                this.items.push({
+      //                    value: this.inputField,
+      //                    checkedClass: '',
+      //                });
+
     },
     noteItem: function noteItem(index) {
       this.items[index].checkedClass = !this.items[index].checkedClass ? 'checked' : '';
