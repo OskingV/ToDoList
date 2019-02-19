@@ -7,8 +7,8 @@
                 <button type="button" class="btn btn--primary btn--inside uppercase" @click="addItem">Add</button>
             </form>
         </div>
-        <div class="col-md-12 items" v-for="(item, index) in items">
-            <div class="item" :class="item.checkedClass" @click="noteItem(index)"><i class="fas fa-check"></i> <span> {{ item.value }} </span>  <div><i class="fas fa-times" @click="deleteItem(index)"></i></div></div>
+        <div class="col-md-12 items" v-for="(item, index) in items" :key="item.id">
+            <div class="item" :class="getCheckedClass(item.is_checked)" @click="noteItem($event, index, item.id)"><i class="fas fa-check"></i> <span> {{ item.value }} </span>  <div><i class="fas fa-times" @click="deleteItem(index, item.id)"></i></div></div>
         </div>
     </div>
 </template>
@@ -18,27 +18,39 @@
 
         data() {
             return {
-                items: [],
+                items: {},
                 inputField: '',
             };
         },
 
+        created() {
+            this.fetch();
+        },
+
         methods: {
+            fetch() {
+                axios.get('items')
+                    .then(({ data }) => {
+                        this.items = data.data;
+                    });
+            },
             addItem() {
                 if(this.inputField !== '') {
-                    axios.post('api/items', {value: this.inputField})
-                        .then(({data}) => console.log(data))
-                        .catch(({response}) => console.log(response));
+                    axios.post('items', {value: this.inputField})
+                        .then(({data}) => this.items.push( data.data ));
                 }
-//                this.items.push({
-//                    value: this.inputField,
-//                    checkedClass: '',
-//                });
             },
-            noteItem(index) {
-                this.items[index].checkedClass = !this.items[index].checkedClass ? 'checked' : '';
+            getCheckedClass (status) {
+                return +status ? 'checked' : '';
             },
-            deleteItem(index) {
+            noteItem(e, index, id) {
+                if(e.target.classList.contains('item')){
+                    axios.put('items/' + id);
+                    this.items[index].is_checked = !(+this.items[index].is_checked) ? 1 : 0;
+                }
+            },
+            deleteItem(index, id) {
+                axios.delete('items/' + id);
                 this.items.splice(index, 1);
             },
         }

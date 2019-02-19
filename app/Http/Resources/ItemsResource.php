@@ -17,7 +17,6 @@ class ItemsResource extends JsonResource
         return [
             'id' => $this->id,
             'value' => $this->value,
-            'computer_id' => $this->computer_id,
             'is_checked' => $this->is_checked
         ];
     }

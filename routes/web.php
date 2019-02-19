@@ -13,3 +13,5 @@
 
 Route::get('/', 'HomeController@index')->name('home');
 
+Route::resource('items', 'ItemsController');
+

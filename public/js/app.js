@@ -1781,32 +1781,45 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      items: [],
+      items: {},
       inputField: ''
     };
   },
+  created: function created() {
+    this.fetch();
+  },
   methods: {
-    addItem: function addItem() {
-      if (this.inputField !== '') {
-        axios.post('api/items', {
-          value: this.inputField
-        }).then(function (_ref) {
-          var data = _ref.data;
-          return console.log(data);
-        }).catch(function (_ref2) {
-          var response = _ref2.response;
-          return console.log(response);
-        });
-      } //                this.items.push({
-      //                    value: this.inputField,
-      //                    checkedClass: '',
-      //                });
+    fetch: function fetch() {
+      var _this = this;
 
+      axios.get('items').then(function (_ref) {
+        var data = _ref.data;
+        _this.items = data.data;
+      });
     },
-    noteItem: function noteItem(index) {
-      this.items[index].checkedClass = !this.items[index].checkedClass ? 'checked' : '';
+    addItem: function addItem() {
+      var _this2 = this;
+
+      if (this.inputField !== '') {
+        axios.post('items', {
+          value: this.inputField
+        }).then(function (_ref2) {
+          var data = _ref2.data;
+          return _this2.items.push(data.data);
+        });
+      }
     },
-    deleteItem: function deleteItem(index) {
+    getCheckedClass: function getCheckedClass(status) {
+      return +status ? 'checked' : '';
+    },
+    noteItem: function noteItem(e, index, id) {
+      if (e.target.classList.contains('item')) {
+        axios.put('items/' + id);
+        this.items[index].is_checked = !+this.items[index].is_checked ? 1 : 0;
+      }
+    },
+    deleteItem: function deleteItem(index, id) {
+      axios.delete('items/' + id);
       this.items.splice(index, 1);
     }
   }
@@ -36763,15 +36776,15 @@ var render = function() {
       ]),
       _vm._v(" "),
       _vm._l(_vm.items, function(item, index) {
-        return _c("div", { staticClass: "col-md-12 items" }, [
+        return _c("div", { key: item.id, staticClass: "col-md-12 items" }, [
           _c(
             "div",
             {
               staticClass: "item",
-              class: item.checkedClass,
+              class: _vm.getCheckedClass(item.is_checked),
               on: {
                 click: function($event) {
-                  return _vm.noteItem(index)
+                  return _vm.noteItem($event, index, item.id)
                 }
               }
             },
@@ -36785,7 +36798,7 @@ var render = function() {
                   staticClass: "fas fa-times",
                   on: {
                     click: function($event) {
-                      return _vm.deleteItem(index)
+                      return _vm.deleteItem(index, item.id)
                     }
                   }
                 })
