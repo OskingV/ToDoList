@@ -39,6 +39,11 @@ class Items extends Model
      */
 
     public function  checked() {
-        return $this->update(['is_checked' => !$this->is_checked]);
+        return (Session::get('computer_id') === $this->computer_id) ? $this->update(['is_checked' => !$this->is_checked]) : $this;
+    }
+
+    public function delete()
+    {
+        return (Session::get('computer_id') === $this->computer_id) ? parent::delete() : null;
     }
 }

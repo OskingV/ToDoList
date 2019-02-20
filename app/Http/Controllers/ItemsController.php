@@ -65,7 +65,6 @@ class ItemsController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(Items $item) {
-
         $item->delete();
         return response()->json([
             'success' => 'Item has been deleted successfully!'

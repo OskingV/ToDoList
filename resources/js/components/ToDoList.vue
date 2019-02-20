@@ -8,7 +8,7 @@
             </form>
         </div>
         <div class="col-md-12 items" v-for="(item, index) in items" :key="item.id">
-            <div class="item" :class="getCheckedClass(item.is_checked)" @click="noteItem($event, index, item.id)"><i class="fas fa-check"></i> <span> {{ item.value }} </span>  <div><i class="fas fa-times" @click="deleteItem(index, item.id)"></i></div></div>
+            <div class="item" :class="getCheckedClass(item.is_checked)" @click="noteItem($event, index, item.id)"><i class="fas fa-check"></i> <span> {{ item.value }} </span>  <div @click="deleteItem(index, item.id)" ><i class="fas fa-times"></i></div></div>
         </div>
     </div>
 </template>
